@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tensor Titans - Methodology</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --text: #c9d1d9;
+      --text-dim: #8b949e;
+      --border: #30363d;
+      --accent: #3b82f6;
+      --accent-bright: #60a5fa;
+      
+      --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      padding-top: 80px;
+    }
+
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      background: rgba(22, 27, 34, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+      z-index: 100;
+    }
+
+    .nav__brand {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 18px;
+      margin-right: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav__brand span { color: var(--accent); }
+
+    .nav__links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .nav__link {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav__link:hover, .nav__link.active {
+      color: #ffffff;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; color: #ffffff; }
+    
+    .hero { margin-bottom: 60px; border-bottom: 1px solid var(--border); padding-bottom: 40px; }
+    .hero h1 { font-size: 48px; line-height: 1.1; letter-spacing: -1px; }
+
+    .section { margin-bottom: 80px; }
+    .section h2 { font-size: 32px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+    .section h3 { font-size: 24px; margin-top: 32px; margin-bottom: 16px; color: #ffffff; }
+    .section p { color: var(--text-dim); margin-bottom: 16px; }
+    .section ul { color: var(--text-dim); margin-bottom: 16px; padding-left: 20px; }
+    .section li { margin-bottom: 8px; }
+
+    .callout {
+      background: rgba(59, 130, 246, 0.1);
+      border-left: 4px solid var(--accent);
+      padding: 20px 24px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 24px;
+    }
+    .callout h4 { font-family: var(--font-body); font-weight: 600; margin-bottom: 8px; font-size: 16px; color: var(--accent-bright); }
+
+    .footer {
+      border-top: 1px solid var(--border);
+      padding-top: 32px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+    }
+    .footer a { color: var(--accent); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html" class="nav__brand">Tensor<span>Titans</span></a>
+    <div class="nav__links">
+      <a href="index.html" class="nav__link">Overview</a>
+      <a href="methodology.html" class="nav__link active">Methodology</a>
+      <a href="pipeline.html" class="nav__link">Pipeline</a>
+      <a href="deployment.html" class="nav__link">Reproduction</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="hero">
+      <h1>Methodology Deep Dive</h1>
+    </div>
+
+    <div class="section" id="analysis">
+      <h2>Problem Analysis</h2>
+      <p>Through careful measurement on the full training labels, we uncovered several distinct patterns within the generator process:</p>
+      <ul>
+        <li><strong>One owner per record:</strong> Each Source 2/3 record matches at most one Source 1 record, and 26% match none.</li>
+        <li><strong>Indic scripts:</strong> 18% of India Source 2/3 names are in Indic scripts. We discovered they act as a word-level dictionary with ~1,350 words, allowing for accurate transliteration via positional alignment.</li>
+        <li><strong>Noise vs. Siblings:</strong> We distinguished "true copies" which suffer from noise (case changes, typos, website forms) versus "siblings"—near-copies of a Source 1 business that are actually different businesses (e.g. same name on the same street but a different legal form).</li>
+        <li><strong>France (test only):</strong> Following the sibling mechanism, French records utilized French words and legal forms. As France lacked training labels, we needed an adaptive approach.</li>
+      </ul>
+    </div>
+
+    <div class="section" id="strategy">
+      <h2>Solution Strategy</h2>
+      <p>Our approach revolves around a two-stage gradient boosting architecture (Blocking + Classifier) employing many-to-one assignments.</p>
+      
+      <div class="callout">
+        <h4>Core Innovations</h4>
+        <p>1. <strong>Retrieval:</strong> Using joint multi-channel scoring rather than capped per-Source-1 blocks.<br>
+        2. <strong>Generator Targeting:</strong> Features specifically built to tackle the generator's sibling mechanism, such as cross-fitted token/legal-form risk and label-free house-number stats.<br>
+        3. <strong>Unseen-Country Proxy:</strong> A leave-one-country-out model validated by training on US and scoring India without labels.<br>
+        4. <strong>Label-Free Diagnosis:</strong> Self-training and noise-word rule measurement for French records.</p>
+      </div>
+    </div>
+
+    <div class="section" id="blocking">
+      <h2>Candidate Generation (Blocking)</h2>
+      <p>Candidate pairs are retrieved via an inverted index per country. Three channels are used:</p>
+      <ol>
+        <li>Core-name word unigrams and adjacent bigrams</li>
+        <li>Character 4-grams of the joined core name (catches typos and domains)</li>
+        <li>Address tokens and numbers</li>
+      </ol>
+      <p>A stage-0 LightGBM re-ranker heavily prunes candidates, sending only 8.3M test pairs to the final stage, without losing true matches (recall of 98.86%).</p>
+    </div>
+
+    <div class="section" id="matching">
+      <h2>Matching Model</h2>
+      <p>We use LightGBM models with 2-fold cross-fitting by Source 1 entity. Stage 1 uses 82 features (name ratios, token risks, legal-form conflicts, address stats), while stage 2 adds 9 competition-context features.</p>
+      <p>For robustness, five US/India stage-1/stage-2 chains are averaged. The expected-F0.5 rule determines how many assigned candidates to keep per Source 1 entity.</p>
+    </div>
+
+    <div class="footer">
+      <a href="index.html">← Overview</a>
+      <a href="pipeline.html">Pipeline Architecture →</a>
+    </div>
+  </div>
+</body>
+</html>

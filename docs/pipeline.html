@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tensor Titans - Pipeline</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --text: #c9d1d9;
+      --text-dim: #8b949e;
+      --border: #30363d;
+      --accent: #3b82f6;
+      --accent-bright: #60a5fa;
+      
+      --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      padding-top: 80px;
+    }
+
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      background: rgba(22, 27, 34, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+      z-index: 100;
+    }
+
+    .nav__brand {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 18px;
+      margin-right: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav__brand span { color: var(--accent); }
+
+    .nav__links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .nav__link {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav__link:hover, .nav__link.active {
+      color: #ffffff;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; color: #ffffff; }
+    
+    .hero { margin-bottom: 60px; border-bottom: 1px solid var(--border); padding-bottom: 40px; }
+    .hero h1 { font-size: 48px; line-height: 1.1; letter-spacing: -1px; }
+
+    .section { margin-bottom: 80px; }
+    .section h2 { font-size: 32px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+    .section h3 { font-size: 20px; margin-top: 40px; margin-bottom: 16px; color: var(--accent); font-family: var(--font-mono); }
+    .section p { color: var(--text-dim); margin-bottom: 16px; }
+    
+    .prop-list { margin-bottom: 24px; }
+    .prop-item { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+    .prop-name { font-family: var(--font-mono); font-weight: 600; min-width: 140px; color: #ffffff; }
+    .prop-type { font-family: var(--font-mono); color: var(--accent); font-size: 13px; margin-bottom: 4px; }
+    .prop-desc { color: var(--text-dim); font-size: 14px; }
+
+    pre {
+      background: var(--surface);
+      color: var(--text);
+      padding: 20px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      margin-right: 8px;
+    }
+    .badge.post { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+
+    .footer {
+      border-top: 1px solid var(--border);
+      padding-top: 32px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+    }
+    .footer a { color: var(--accent); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html" class="nav__brand">Tensor<span>Titans</span></a>
+    <div class="nav__links">
+      <a href="index.html" class="nav__link">Overview</a>
+      <a href="methodology.html" class="nav__link">Methodology</a>
+      <a href="pipeline.html" class="nav__link active">Pipeline</a>
+      <a href="deployment.html" class="nav__link">Reproduction</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="hero">
+      <h1>Pipeline Architecture</h1>
+    </div>
+
+    <div class="section" id="architecture">
+      <h2>Single-File Code Layout</h2>
+      <p>The entire pipeline is housed within one file: <code>src/er_pipeline.py</code>. The code execution sequentially follows the flow of data.</p>
+      
+      <div class="prop-list">
+        <div class="prop-item">
+          <div class="prop-name">textnorm & prep</div>
+          <div>
+            <div class="prop-desc">Parsing and name/address normalization (transliteration, accents, OCR digits, aliases, websites, legal forms).</div>
+          </div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-name">retrieve</div>
+          <div>
+            <div class="prop-desc">Numba-optimized multi-channel inverted index for high-recall blocking.</div>
+          </div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-name">features & stage0</div>
+          <div>
+            <div class="prop-desc">Generation of pair features, cross-fitted token risk, and the stage-0 re-ranker model.</div>
+          </div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-name">train_model</div>
+          <div>
+            <div class="prop-desc">Stage-1 and Stage-2 LightGBM model training using cross-fitted predictions.</div>
+          </div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-name">france_* methods</div>
+          <div>
+            <div class="prop-desc">Unsupervised handling for France leveraging self-training and explicit noise-word rules.</div>
+          </div>
+        </div>
+        <div class="prop-item">
+          <div class="prop-name">predict & decide</div>
+          <div>
+            <div class="prop-desc">Many-to-one assignments guided by the per-entity expected-F0.5 rule. Output writing to TSV.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="filtering">
+      <h2>Filtering Candidate Sets</h2>
+      <p>While Phase-0 generation produces up to 43.4 million test pairs, our <code>cand_filter</code> step ensures computational efficiency for inference. Only pairs scoring above a probability threshold of <strong>0.0005</strong> are forwarded to the final matchers, narrowing the candidate pool down to 8.3M test pairs (approximately 4.8 candidates per Source 1 entity).</p>
+    </div>
+
+    <div class="footer">
+      <a href="methodology.html">← Methodology</a>
+      <a href="deployment.html">Reproduction Guide →</a>
+    </div>
+  </div>
+</body>
+</html>
